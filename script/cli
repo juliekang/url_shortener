@@ -1,0 +1,47 @@
+
+def get_input(msg)
+	puts msg
+	gets.chomp
+end
+
+def tag_select
+  puts "Available tags:"
+	topics = TagTopic.pluck(:topic_name)
+  topics.each_with_index do |topic_name, index|
+    puts "#{index}. #{topic_name}"
+  end
+  tag_num = get_input("Please select an available tag.")
+  topic_obj = TagTopic.find_by_topic_name(topics[tag_num.to_i])
+  topic_obj.shortened_urls.pluck(:short_url)
+end
+
+email = get_input("Input your email:")
+user = User.find_by_email(email)
+
+option = get_input(<<-BOOM)
+What do you want to do?
+0. Create shortened URL
+1. Visit shortened URL
+2. Select by tag
+BOOM
+
+case option
+when "0"
+  user.create_shortened_url
+when "1"
+  user.visit_shortened_url
+when "2"
+  list = tag_select
+  puts list
+end
+
+def tag_select
+  puts "Available tags:"
+	topics = TagTopic.all.pluck(:topic_name)
+  topics.each_with_index do |topic_name, index|
+    puts "#{index}. #{topic_name}"
+  end
+  tag_num = get_input("Please select an available tag.")
+  topic_obj = TagTopic.find_by_topic_name(topics[tag_num.to_i])
+  topic_obj.shortened_urls.pluck(:long_url)
+end
