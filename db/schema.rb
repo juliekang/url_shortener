@@ -11,14 +11,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131206001059) do
+ActiveRecord::Schema.define(:version => 20131206013855) do
 
   create_table "shortened_urls", :force => true do |t|
-    t.string   "long_url"
+    t.string   "long_url",     :limit => 1024
     t.string   "short_url"
     t.integer  "submitter_id"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
   end
 
   add_index "shortened_urls", ["short_url"], :name => "index_shortened_urls_on_short_url", :unique => true

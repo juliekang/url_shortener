@@ -2,6 +2,8 @@ class ShortenedUrl < ActiveRecord::Base
   attr_accessible :long_url, :short_url, :submitter_id
   validates :long_url, :short_url, :submitter_id, :presence => true
   validates :long_url, :short_url, :uniqueness => true
+  validates :long_url, length: { maximum: 1024 }
+  validate :less_than_five_in_the_last_minute?
 
   belongs_to(
     :submitter,
@@ -63,6 +65,10 @@ class ShortenedUrl < ActiveRecord::Base
   def num_recent_uniques
     self.visits.where("updated_at > ?", Time.now - 600 ).count :visitor_id, distinct: true
     #self.visits.count(conditions: "updated_at > #{Time.now - 600}", distinct: true )
+  end
+
+  def less_than_five_in_the_last_minute?
+    ShortenedUrl.where("submitter_id = #{self.submitter_id} AND updated_at > ?", Time.now - 60).count < 6
   end
 
 end
